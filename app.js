@@ -1,7 +1,6 @@
 const express = require('express');
 const api = require('./routes/api');
 const bodyParser = require('body-parser');
-const proxy = require('http-proxy-middleware');
 const {auth, onlyForAuthenticated, initApp} = require('./routes/auth');
 const path = require('path');
 
@@ -17,6 +16,7 @@ app.use('/auth', auth);
 // dev proxies
 let guestProxyMiddleware, proxyMiddleware;
 if (process.env.MODE === 'DEVELOPMENT') {
+    const proxy = require('http-proxy-middleware');
     guestProxyMiddleware = proxy(['/'], {
         target: process.env.DEV_AUTH_SERVER_ADDRESS
     });
