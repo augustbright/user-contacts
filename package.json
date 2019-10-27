@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "concurrently \"cd auth && npm run build\" \"cd client && npm run build\"",
+    "build": "concurrently \"npm i\" \"cd auth && npm i && npm run build\" \"cd client && npm i && npm run build\"",
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
