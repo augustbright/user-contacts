@@ -15,7 +15,7 @@ app.use('/api', onlyForAuthenticated, api);
 app.use('/auth', auth);
 
 // dev proxies
-const guestProxyMiddleware, proxyMiddleware
+let guestProxyMiddleware, proxyMiddleware;
 if (process.env.MODE === 'DEVELOPMENT') {
     guestProxyMiddleware = proxy(['/'], {
         target: process.env.DEV_AUTH_SERVER_ADDRESS
