@@ -14,13 +14,19 @@ app.use(bodyParser.json());
 app.use('/api', onlyForAuthenticated, api);
 app.use('/auth', auth);
 
-const guestProxyMiddleware = proxy(['/'], {
-    target: process.env.DEV_AUTH_SERVER_ADDRESS
-});
+// dev proxies
+const guestProxyMiddleware, proxyMiddleware
+if (process.env.MODE === 'DEVELOPMENT') {
+    guestProxyMiddleware = proxy(['/'], {
+        target: process.env.DEV_AUTH_SERVER_ADDRESS
+    });
+    proxyMiddleware = proxy(['/'], {
+        target: process.env.DEV_CLIENT_SERVER_ADDRESS
+    });        
+}
+
+// prod statics
 const guestStaticMiddleware = express.static('./auth/build');
-const proxyMiddleware = proxy(['/'], {
-    target: process.env.DEV_CLIENT_SERVER_ADDRESS
-});
 const staticMiddleware = express.static('./client/build');
 
 // Use proxy for development & static for production
