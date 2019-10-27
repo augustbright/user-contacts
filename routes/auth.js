@@ -57,6 +57,19 @@ auth.get('/google/callback', passport.authenticate('google'), (req, res) => {
     res.redirect('/');
 });
 
+auth.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+});
+
+auth.get('/current', (req, res) => {
+    if (!req.user) {
+        return res.json(null);
+    }
+    const {displayName, _id} = req.user;
+    res.json({displayName, _id});
+});
+
 function onlyForAuthenticated(req, res, next) {
     if (req.user) {
         next();

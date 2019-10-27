@@ -1,4 +1,4 @@
-import {SET_CONTACTS} from "./types";
+import {SET_CONTACTS, SET_USER_INFO} from "./types";
 
 
 export const setContacts = contacts => ({
@@ -44,4 +44,17 @@ export const deleteContact = id => async dispatch => {
         method: 'DELETE'
     });
     return dispatch(reloadContacts());
+};
+
+export const setUserInfo = userInfo => ({
+    type: SET_USER_INFO,
+    userInfo
+});
+
+export const reloadUserInfo = () => async dispatch => {
+    const userInfoResponse = await fetch('/auth/current', {
+        method: 'GET'
+    });
+    const userInfo = await userInfoResponse.json();
+    return dispatch(setUserInfo(userInfo));
 };
