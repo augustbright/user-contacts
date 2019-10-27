@@ -3,6 +3,7 @@ const api = require('./routes/api');
 const bodyParser = require('body-parser');
 const proxy = require('http-proxy-middleware');
 const {auth, onlyForAuthenticated, initApp} = require('./routes/auth');
+const path = require('path');
 
 const {PORT} = process.env;
 const app = express();
@@ -16,12 +17,13 @@ app.use('/auth', auth);
 const guestProxyMiddleware = proxy(['/'], {
     target: process.env.DEV_AUTH_SERVER_ADDRESS
 });
-const guestStaticMiddleware = express.static('./auth');
+const guestStaticMiddleware = express.static('./auth/build');
 const proxyMiddleware = proxy(['/'], {
     target: process.env.DEV_CLIENT_SERVER_ADDRESS
 });
-const staticMiddleware = express.static('./client');
+const staticMiddleware = express.static('./client/build');
 
+// Use proxy for development & static for production
 app.use((req, res, next) => {
     if (process.env.MODE === 'DEVELOPMENT') {
         if (req.user) {
@@ -35,6 +37,16 @@ app.use((req, res, next) => {
         } else {
             guestStaticMiddleware(req, res, next);
         }
+    }
+});
+
+app.get('*', (req, res) => {
+    if (process.env.MODE !== 'DEVELOPMENT') {
+        if (req.user) {
+            res.sendFile(path.join(__dirname, 'client/build/index.html'));
+        } else {
+            res.sendFile(path.join(__dirname, 'auth/build/index.html'));
+        }        
     }
 });
 
