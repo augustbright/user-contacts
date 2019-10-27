@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`It renders without errors 1`] = `
+<p>
+  This site was created just for fun by 
+  <a
+    href="mailto://vtumanov782@gmail.com"
+    target="_blank"
+  >
+    vtumanov782@gmail.com
+  </a>
+</p>
+`;

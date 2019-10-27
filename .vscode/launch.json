@@ -10,7 +10,13 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}\\app.js",
             "env": {
-                "PORT": "6000"
+                "PORT": "5000",
+                "SESSION_KEY": "dev",
+                "GOOGLE_CLIENT_ID": "670879841065-m0esrdgjh83p99dmlfqnng5l8c8artap.apps.googleusercontent.com",
+                "GOOGLE_CLIENT_SECRET": "psRY9wJnH8lCeRvVlMmetrPe",
+                "GOOGLE_CALLBACK_URL": "http://localhost:5000/auth/google/callback",
+                "MONGO_URL": "mongodb://localhost:27017",
+                "MONGO_DB": "contacts"
             }
         }
     ]
