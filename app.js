@@ -16,8 +16,8 @@ const { promisify } = require('util');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
-const { default: createStore } = require('./client/src/redux/index');
-const { default: App } = require('./client/src/components/App');
+const { default: createStore } = require('./src/redux/index');
+const { default: App } = require('./src/components/App');
 const { Provider } = require('react-redux');
 const { StaticRouter } = require('react-router-dom');
 const contactsBL = require('./bl/contacts');
@@ -45,7 +45,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // prod statics
 const guestStaticMiddleware = express.static('./auth/build');
-const staticMiddleware = express.static('./client/build');
+const staticMiddleware = express.static('./build');
 
 // Use proxy for development & static for production
 app.use(async (req, res, next) => {
@@ -58,10 +58,10 @@ app.use(async (req, res, next) => {
     } else {
         if (req.user) {
             //ssr
-            const filePath = path.resolve(path.join('./', 'client', 'build', req.path));
+            const filePath = path.resolve(path.join('./', 'build', req.path));
             const pathStat = await promisify(fs.stat)(filePath);
             const fileExists = pathStat.isFile();
-            const indexPath = path.join(__dirname, 'client/build/index.html');
+            const indexPath = path.join(__dirname, 'build/index.html');
             if (!fileExists) {
                 const htmlContent = await promisify(fs.readFile)(indexPath, 'utf-8');
                 const store = createStore({
@@ -72,10 +72,14 @@ app.use(async (req, res, next) => {
                     contacts: await contactsBL.getAll(req.user._id)
                 });
 
-                const appElement = React.createElement(Provider, { store }, 
-                    React.createElement(StaticRouter, null, 
+                const appElement = React.createElement(Provider, { store },
+                    React.createElement(StaticRouter, null,
                         React.createElement(App)));
-                return res.send(htmlContent.replace(/\{\{SSR\}\}/, ReactDOMServer.renderToString(appElement)));
+                return res.send(
+                    htmlContent
+                        .replace(/\{\{SSR\}\}/, ReactDOMServer.renderToString(appElement))
+                        .replace(/\{STATE_FROM_SERVER:"STATE_FROM_SERVER"\}/, JSON.stringify(store.getState()))
+                );
             }
             staticMiddleware(req, res, next);
         } else {
@@ -87,7 +91,7 @@ app.use(async (req, res, next) => {
 app.get('*', (req, res) => {
     if (process.env.NODE_ENV !== 'development') {
         if (req.user) {
-            res.sendFile(path.join(__dirname, 'client/build/index.html'));
+            res.sendFile(path.join(__dirname, 'build/index.html'));
         } else {
             res.sendFile(path.join(__dirname, 'auth/build/index.html'));
         }

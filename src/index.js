@@ -7,7 +7,7 @@ import createStore from './redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
-const STATE_FROM_SERVER = {};
+const STATE_FROM_SERVER = (1, eval)("this").STATE_FROM_SERVER || {};
 const store = createStore(STATE_FROM_SERVER);
 
 ReactDOM.render(
