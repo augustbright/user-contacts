@@ -59,8 +59,9 @@ app.use(async (req, res, next) => {
         if (req.user) {
             //ssr
             const filePath = path.resolve(path.join('./', 'build', req.path));
-            const pathStat = await promisify(fs.stat)(filePath);
-            const fileExists = pathStat.isFile();
+            const pathExists = await promisify(fs.exists)(filePath);
+            const pathStat = pathExists && await promisify(fs.stat)(filePath);
+            const fileExists = pathExists && pathStat.isFile();
             const indexPath = path.join(__dirname, 'build/index.html');
             if (!fileExists) {
                 const htmlContent = await promisify(fs.readFile)(indexPath, 'utf-8');
