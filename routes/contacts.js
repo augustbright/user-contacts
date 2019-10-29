@@ -2,17 +2,10 @@ const express = require('express');
 const contacts = express.Router({});
 const {getCollection} = require('../db');
 const {ObjectID} = require('mongodb');
+const contactsBL = require('../bl/contacts');
 
-contacts.get('/', async (req, res) => {
-    // get all user's contacts
-    const users = await getCollection('users');
-    const contacts = await getCollection('contacts');
-    const currentUser = await users.findOne({_id: ObjectID(req.user._id)});
-    if (!currentUser.contacts) {
-        return res.json([]);
-    }
-    const userContacts = await contacts.find({_id: {$in: currentUser.contacts}});
-    res.json(await userContacts.toArray());
+contacts.get('/', async (req, res) => {   
+    res.json(await contactsBL.getAll(req.user._id));
 });
 
 contacts.get('/:id', async (req, res) => {

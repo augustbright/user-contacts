@@ -4,14 +4,17 @@ import './style/style.scss';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import createStore from './redux';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 const STATE_FROM_SERVER = {};
 const store = createStore(STATE_FROM_SERVER);
 
 ReactDOM.render(
-    <Provider {...{store}}>
-        <App />
+    <Provider {...{ store }}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </Provider>,
     document.getElementById('root'));
 

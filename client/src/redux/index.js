@@ -4,7 +4,7 @@ import reducer from './reducer';
 import {reloadContacts, reloadUserInfo} from './action';
 import { selectContacts, selectIsUserLoggedIn } from './selectors';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = (1, eval)('this').__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default (stateFromServer) => {
     const store = createStore(reducer, stateFromServer, composeEnhancers(applyMiddleware(thunk)));
